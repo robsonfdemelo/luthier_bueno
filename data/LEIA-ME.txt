@@ -1,0 +1,4 @@
+O banco SQLite sera criado aqui automaticamente quando executar npm start.
+O arquivo se chama bueno-luthier.sqlite.
+Faca backups pelo menu Configuracoes do sistema.
+Evite compartilhar arquivos desta pasta, pois contem dados de clientes.
