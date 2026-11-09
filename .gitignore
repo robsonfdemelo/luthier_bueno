@@ -1,7 +1,13 @@
 node_modules/
-data/*.sqlite
-data/*.sqlite-wal
-data/*.sqlite-shm
+/data/*
+!/data/LEIA-ME.txt
 .env
-.DS_Store
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-*
+*.db
 *.log
+.DS_Store
+.vscode/
+coverage/

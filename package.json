@@ -1,8 +1,8 @@
 {
   "name": "bueno-luthier",
-  "version": "2.2.0",
+  "version": "2.4.0",
   "private": true,
-  "description": "Sistema local de gestão da oficina Bueno Luthier, com Node.js e SQLite.",
+  "description": "Gestão de ordens de serviço Bueno Luthier, com Node.js, SQLite persistente e login por senha.",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
