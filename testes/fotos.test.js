@@ -4,7 +4,9 @@ const assert = require('node:assert/strict');
 const {mkdtempSync, rmSync} = require('node:fs');
 const {tmpdir} = require('node:os');
 const path = require('node:path');
-const {criarBanco} = require('../server/banco');
+const {criarRepositorio} = require('../server/repositories/oficina.repository');
+const {criarOficinaService} = require('../server/services/oficina.service');
+const criarBanco = (arquivo) => criarOficinaService(criarRepositorio(arquivo));
 const PNG_MINIMO = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO8ZB6sAAAAASUVORK5CYII=';
 function nova() {
  const dir=mkdtempSync(path.join(tmpdir(),'bueno-fotos-'));const arquivo=path.join(dir,'banco.sqlite');

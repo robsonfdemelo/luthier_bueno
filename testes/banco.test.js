@@ -5,7 +5,9 @@ const assert = require('node:assert/strict');
 const {mkdtempSync, rmSync} = require('node:fs');
 const {tmpdir} = require('node:os');
 const path = require('node:path');
-const {criarBanco} = require('../server/banco');
+const {criarRepositorio} = require('../server/repositories/oficina.repository');
+const {criarOficinaService} = require('../server/services/oficina.service');
+const criarBanco = (arquivo) => criarOficinaService(criarRepositorio(arquivo));
 
 function novaInstancia() {
   const diretorio = mkdtempSync(path.join(tmpdir(),'bueno-luthier-test-'));

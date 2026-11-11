@@ -6,7 +6,9 @@ const {mkdtempSync,rmSync}=require('node:fs');
 const os=require('node:os');
 const path=require('node:path');
 const net=require('node:net');
-const {criarBanco}=require('../server/banco');
+const {criarRepositorio}=require('../server/repositories/oficina.repository');
+const {criarOficinaService}=require('../server/services/oficina.service');
+const criarBanco=(arquivo)=>criarOficinaService(criarRepositorio(arquivo));
 const root=path.resolve(__dirname,'..');
 const senha='SenhaTesteForte0123!';
 function estado(){
