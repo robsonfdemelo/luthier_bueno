@@ -29,3 +29,28 @@ test('ao editar OS antiga, preserva atributos históricos do instrumento',()=>{
   assert.ok(app.includes(name),`preservação ausente: ${name}`);
  }
 });
+
+
+test('status pode ser alterado diretamente no painel, listagem e detalhe',()=>{
+  assert.ok(app.includes('function statusRapido(o)'));
+  assert.ok(app.includes('data-status-order'));
+  assert.ok(app.includes('async function alterarStatusRapido(id,novo)'));
+  assert.ok(app.includes('const salvo=await save(anterior)'));
+  assert.ok(app.includes("if(e.target.closest('[data-status-order]'))return"));
+  assert.ok(app.split('function dashboard()')[1].split('function empty(')[0].includes('statusRapido(o)'));
+  assert.ok(app.split('function ordersPage()')[1].split('function customersPage()')[0].includes('statusRapido(o)'));
+  assert.ok(app.split('function viewOrder(o)')[1].split('function render()')[0].includes('statusRapido(o)'));
+});
+
+test('relato do cliente e diagnóstico não são campos obrigatórios nem aparecem nas vistas da OS',()=>{
+  assert.ok(!orderForm.includes("area('Solicitação"));
+  assert.ok(!orderForm.includes("area('Avaliação"));
+  assert.ok(!orderForm.includes("'complaint',"));
+  assert.ok(!orderForm.includes("'diagnosis',"));
+  const detalhe=app.split('function viewOrder(o)')[1].split('function render()')[0];
+  assert.ok(!detalhe.includes('Relato do cliente'));
+  assert.ok(!detalhe.includes('Diagnóstico técnico'));
+  assert.ok(!print.includes('Solicitação / defeito relatado'));
+  assert.ok(!print.includes('Diagnóstico técnico'));
+  assert.ok(app.includes("complaint:old?.complaint||''"));
+});

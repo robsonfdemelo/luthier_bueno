@@ -135,7 +135,7 @@ function validarEstado(payload) {
       instrumentId: texto(o.instrumentId, 'Instrumento da OS', 80, true),
       receivedDate: dataISO(o.receivedDate, 'Data de entrada', true),
       dueDate: dataISO(o.dueDate, 'Previsão de entrega'),
-      complaint: texto(o.complaint, 'Solicitação', 10000, true),
+      complaint: texto(o.complaint, 'Solicitação', 10000),
       diagnosis: texto(o.diagnosis, 'Diagnóstico', 10000),
       condition: texto(o.condition, 'Condição na entrada', 10000),
       accessories: texto(o.accessories, 'Acessórios', 4000),
