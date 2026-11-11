@@ -145,6 +145,12 @@ const servidor = http.createServer(async (req, res) => {
       res.writeHead(200, {'Content-Type':foto.mime, 'Content-Length':foto.bytes.length, 'Content-Disposition':'inline', 'Cache-Control':'private, max-age=60', 'X-Content-Type-Options':'nosniff'});
       return res.end(foto.bytes);
     }
+    const rotaStatus = /^\/api\/orders\/([A-Za-z0-9_-]{1,80})\/status$/.exec(url.pathname);
+    if (req.method === 'PATCH' && rotaStatus) {
+      validarOrigem(req);
+      const payload = await lerJson(req, 4096);
+      return json(res, 200, banco.alterarStatus({id:rotaStatus[1],revision:payload?.revision,status:payload?.status}));
+    }
     if (req.method === 'PUT' && url.pathname === '/api/state') {
       validarOrigem(req);
       return json(res, 200, banco.salvar(await lerJson(req, 12 * 1024 * 1024)));

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {randomUUID} = require('node:crypto');
 const {DatabaseSync} = require('node:sqlite');
-const {validarEstado, ErroValidacao} = require('./validacao');
+const {validarEstado, validarStatus, ErroValidacao} = require('./validacao');
 
 const TERMOS_PADRAO = 'O orçamento e a execução dos serviços dependem de aprovação do cliente. Alterações no valor ou no prazo serão comunicadas previamente.';
 const TIPOS_IMAGEM = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -131,6 +131,8 @@ function criarBanco(arquivo) {
   const insServico = db.prepare('INSERT INTO servicos_os (ordem_id,posicao,descricao,quantidade,preco_unitario) VALUES (?,?,?,?,?)');
   const updConfig = db.prepare('UPDATE configuracoes SET nome=?, telefone=?, endereco=?, documento=?, termos=?, garantia=? WHERE id=1');
   const updMeta = db.prepare('UPDATE metadata SET valor=? WHERE chave=?');
+  const selStatus = db.prepare('SELECT status, atualizado_em AS updatedAt FROM ordens_servico WHERE id=?');
+  const updStatus = db.prepare('UPDATE ordens_servico SET status=?, atualizado_em=? WHERE id=?');
 
   function subirFoto({name, mime, data}) {
     const nome = String(name ?? 'Foto do instrumento').trim().slice(0, 150) || 'Foto do instrumento';
@@ -208,7 +210,38 @@ function criarBanco(arquivo) {
     return recuperar();
   }
 
-  return {recuperar, salvar, subirFoto, obterFoto, exportarBackup, restaurar: (corpo) => salvar(corpo, corpo.photos || []), fechar: () => db.close()};
+  function alterarStatus({id, revision, status}) {
+    if (typeof id !== 'string' || !/^[A-Za-z0-9_-]{1,80}$/.test(id)) {
+      throw new ErroValidacao('Identificador da O.S. inválido.');
+    }
+    if (!Number.isSafeInteger(revision) || revision < 0 || revision > 1000000000) {
+      throw new ErroValidacao('Revisão inválida.');
+    }
+    const novoStatus = validarStatus(status);
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      const revisaoAtual = Number(queryMeta.get('revision').valor);
+      if (revision !== revisaoAtual) {
+        throw new ErroValidacao('Esta O.S. foi alterada em outro acesso. Os dados serão atualizados; tente novamente.', 409);
+      }
+      const ordem = selStatus.get(id);
+      if (!ordem) throw new ErroValidacao('Ordem de serviço não encontrada.', 404);
+      if (ordem.status === novoStatus) {
+        db.exec('COMMIT');
+        return {id, status:novoStatus, updatedAt:ordem.updatedAt, revision:revisaoAtual};
+      }
+      const updatedAt = new Date().toISOString();
+      updStatus.run(novoStatus, updatedAt, id);
+      updMeta.run(String(revisaoAtual+1), 'revision');
+      db.exec('COMMIT');
+      return {id, status:novoStatus, updatedAt, revision:revisaoAtual+1};
+    } catch (erro) {
+      db.exec('ROLLBACK');
+      throw erro;
+    }
+  }
+
+  return {recuperar, salvar, alterarStatus, subirFoto, obterFoto, exportarBackup, restaurar: (corpo) => salvar(corpo, corpo.photos || []), fechar: () => db.close()};
 }
 
 module.exports = {criarBanco, MAX_FOTO_BYTES};

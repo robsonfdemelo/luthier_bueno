@@ -183,4 +183,8 @@ function validarEstado(payload) {
   return {revision, state: {version: 3, seq, customers: clientes, instruments: instrumentos, orders: ordens, settings}};
 }
 
-module.exports = {validarEstado, ErroValidacao};
+function validarStatus(status) {
+  return opcao(status, 'Status', STATUS);
+}
+
+module.exports = {validarEstado, validarStatus, ErroValidacao};

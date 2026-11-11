@@ -108,7 +108,34 @@ function printOrder(o){const c=cust(o.customerId)||{},i=instr(o.instrumentId)||{
 window.addEventListener('afterprint',()=>{document.getElementById('print-root').innerHTML=''})
 document.addEventListener('click',e=>{if(e.target.closest('[data-status-order]'))return;const t=e.target.closest('[data-page],[data-open],[data-close],[data-edit],[data-view],[data-print],[data-add-service],[data-remove-service],[data-export],[data-import],[data-remove-photo],[data-remove-file],[data-logout]');if(ui.uploading){showToast('Aguarde o envio das fotos.',true);return}if(!t){if(e.target.id==='modal-backdrop')close();return}if(t.hasAttribute('data-logout')){fetch('/api/logout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).finally(()=>location.assign('/entrar'));return}if(t.hasAttribute('data-page')){ui.page=t.dataset.page;ui.modal=null;ui.editId=null;ui.search='';ui.filter='Todos';render()}else if(t.hasAttribute('data-open')){ui.customerForInstrument=null;open(t.dataset.open)}else if(t.hasAttribute('data-close'))close();else if(t.hasAttribute('data-edit'))open(t.dataset.edit,t.dataset.id);else if(t.hasAttribute('data-view'))open('view',t.dataset.view);else if(t.hasAttribute('data-print')){const o=data.orders.find(x=>x.id===t.dataset.print);if(o)printOrder(o)}else if(t.hasAttribute('data-add-service')){document.getElementById('service-list').insertAdjacentHTML('beforeend',serviceRow({description:'',quantity:1,price:0}));updateOrderTotal()}else if(t.hasAttribute('data-remove-service')){const list=document.getElementById('service-list');if(list.children.length>1){t.closest('.service-line').remove()}else{t.closest('.service-line').querySelectorAll('input').forEach(x=>x.value=x.classList.contains('svc-qty')?'1':x.classList.contains('svc-price')?'0':'')}updateOrderTotal()}else if(t.hasAttribute('data-remove-photo')){ui.orderPhotos=ui.orderPhotos.filter(p=>p.id!==t.dataset.removePhoto);renderPhotoList()}else if(t.hasAttribute('data-remove-file')){const index=Number(t.dataset.removeFile),foto=ui.photoFiles[index];if(foto)URL.revokeObjectURL(foto.url);ui.photoFiles.splice(index,1);renderPhotoList()}else if(t.hasAttribute('data-export'))exportBackup();else if(t.hasAttribute('data-import'))document.getElementById('import-file').click()});
 document.addEventListener('input',e=>{if(e.target.id==='listing-search'){ui.search=e.target.value;filteredRender()}else if(e.target.closest('#order-form')&&(e.target.classList.contains('svc-qty')||e.target.classList.contains('svc-price')))updateOrderTotal()});
-async function alterarStatusRapido(id,novo){const os=data.orders.find(x=>x.id===id);if(!os||!STATUS.includes(novo))return;if(novo===os.status)return;if(saving||ui.uploading){showToast('Aguarde a gravação em andamento.',true);render();return}const anterior=structuredClone(data);os.status=novo;os.updatedAt=new Date().toISOString();const salvo=await save(anterior);render();if(salvo)showToast(`Status da ${os.number} alterado para ${novo}.`)}
+async function alterarStatusRapido(id,novo){
+  const os=data.orders.find(x=>x.id===id);
+  if(!os||!STATUS.includes(novo)||novo===os.status)return;
+  if(saving||ui.uploading){showToast('Aguarde a gravação em andamento.',true);render();return}
+  saving=true;
+  try{
+    const r=await fetch('/api/orders/'+encodeURIComponent(id)+'/status',{
+      method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision,status:novo})
+    });
+    const resposta=await r.json();
+    if(r.status===401){location.assign('/entrar');return}
+    if(!r.ok){const erro=new Error(resposta.erro||'Falha ao atualizar o status.');erro.status=r.status;throw erro}
+    revision=resposta.revision;
+    os.status=resposta.status;
+    os.updatedAt=resposta.updatedAt;
+    render();
+    showToast(`Status da ${os.number} alterado para ${novo}.`);
+  }catch(erro){
+    if(erro.status===409){
+      try{
+        const atual=await fetch('/api/state',{cache:'no-store'});
+        if(atual.ok){const retorno=await atual.json();data=retorno.state;revision=retorno.revision}
+      }catch(_e){}
+    }
+    render();
+    showToast(erro instanceof TypeError?'Falha de conexão com o servidor. Confira se a Railway está Online e tente novamente.':`Não foi possível alterar o status: ${erro.message}`,true);
+  }finally{saving=false}
+}
 document.addEventListener('change',e=>{if(e.target.matches('[data-status-order]')){alterarStatusRapido(e.target.dataset.statusOrder,e.target.value);return}if(e.target.id==='listing-filter'){ui.filter=e.target.value;render()}else if(e.target.id==='order-photo-picker'){adicionarFotos([...e.target.files]);e.target.value=''}else if(e.target.id==='import-file')importBackup(e.target.files[0])});
 document.addEventListener('submit',e=>{if(!['customer-form','instrument-form','order-form','settings-form'].includes(e.target.id))return;e.preventDefault();if(saving||ui.uploading){showToast('Aguarde o salvamento anterior.',true);return}if(e.target.id==='customer-form')handleCustomer(e.target);else if(e.target.id==='instrument-form')handleInstrument(e.target);else if(e.target.id==='order-form')handleOrder(e.target);else if(e.target.id==='settings-form'){const o=formObject(e.target);const anterior=structuredClone(data);data.settings={name:o.name.trim(),phone:o.phone.trim(),address:o.address.trim(),document:o.document.trim(),terms:o.terms.trim(),warranty:num(o.warranty)};save(anterior).then(ok=>{if(ok){render();showToast('Configurações salvas.')}})}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.modal)close()});document.getElementById('app').innerHTML='<div style="padding:45px;font:16px system-ui">Carregando Bueno Luthier…</div>';init();

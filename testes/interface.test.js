@@ -35,7 +35,8 @@ test('status pode ser alterado diretamente no painel, listagem e detalhe',()=>{
   assert.ok(app.includes('function statusRapido(o)'));
   assert.ok(app.includes('data-status-order'));
   assert.ok(app.includes('async function alterarStatusRapido(id,novo)'));
-  assert.ok(app.includes('const salvo=await save(anterior)'));
+  assert.ok(app.includes("'/api/orders/'+encodeURIComponent(id)+'/status'"));
+  assert.ok(app.includes("method:'PATCH'"));
   assert.ok(app.includes("if(e.target.closest('[data-status-order]'))return"));
   assert.ok(app.split('function dashboard()')[1].split('function empty(')[0].includes('statusRapido(o)'));
   assert.ok(app.split('function ordersPage()')[1].split('function customersPage()')[0].includes('statusRapido(o)'));
