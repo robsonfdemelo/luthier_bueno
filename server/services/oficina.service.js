@@ -10,7 +10,14 @@ function criarOficinaService(repositorio) {
   function recuperar() { return repositorio.recuperar(); }
 
   function salvar(payload) {
-    return repositorio.salvar(validarEstado(payload));
+    const validado = validarEstado(payload);
+    const anteriores = new Map(repositorio.recuperar().state.orders.map(o => [o.id, o.status]));
+    for (const ordem of validado.state.orders) {
+      if (['Recebido', 'Em avaliação', 'Aguardando aprovação'].includes(ordem.status) && anteriores.get(ordem.id) !== ordem.status) {
+        throw new ErroValidacao('Este status foi desativado. Selecione um dos status disponíveis.');
+      }
+    }
+    return repositorio.salvar(validado);
   }
 
   function alterarStatus({id, revision, status}) {

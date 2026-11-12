@@ -7,7 +7,9 @@ class ErroValidacao extends Error {
   }
 }
 
-const STATUS = new Set(['Recebido', 'Em avaliação', 'Aguardando aprovação', 'Aprovado', 'Em execução', 'Aguardando peça', 'Pronto para retirada', 'Entregue', 'Cancelado']);
+const STATUS = new Set(['Aprovado', 'Em execução', 'Aguardando peça', 'Pronto para retirada', 'Entregue', 'Cancelado']);
+const STATUS_ANTIGOS = new Set(['Recebido', 'Em avaliação', 'Aguardando aprovação']);
+const STATUS_COMPATIVEIS = new Set([...STATUS, ...STATUS_ANTIGOS]);
 const APROVACOES = new Set(['Pendente', 'Aprovado', 'Recusado']);
 const TIPOS = new Set(['Violão', 'Guitarra', 'Baixo', 'Cavaquinho', 'Ukulele', 'Viola', 'Outro']);
 const PAGAMENTOS = new Set(['Não informado', 'Pix', 'Dinheiro', 'Cartão', 'Transferência', 'Outro']);
@@ -139,7 +141,7 @@ function validarEstado(payload) {
       diagnosis: texto(o.diagnosis, 'Diagnóstico', 10000),
       condition: texto(o.condition, 'Condição na entrada', 10000),
       accessories: texto(o.accessories, 'Acessórios', 4000),
-      status: opcao(o.status, 'Status', STATUS),
+      status: opcao(o.status, 'Status', STATUS_COMPATIVEIS),
       approval: opcao(o.approval, 'Aprovação', APROVACOES),
       items: itens,
       photos: fotos,

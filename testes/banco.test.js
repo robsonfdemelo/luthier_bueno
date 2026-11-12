@@ -25,7 +25,7 @@ function estadoExemplo() {
       id:'ordem-1',number:'OS-00001',createdAt:'2026-11-07T12:00:00.000Z',updatedAt:'2026-11-07T12:00:00.000Z',
       customerId:'cliente-1',instrumentId:'instrumento-1',receivedDate:'2026-11-07',dueDate:'2026-11-12',
       complaint:'Cordas altas',diagnosis:'Regular tensor',condition:'Risco lateral',accessories:'Capa',
-      status:'Recebido',approval:'Pendente',items:[{description:'Regulagem completa',quantity:1,price:150}],
+      status:'Em execução',approval:'Pendente',items:[{description:'Regulagem completa',quantity:1,price:150}],
       paid:50,paymentMethod:'Pix',warrantyDays:90,notes:''
     }],
     settings:{name:'Bueno Luthier',phone:'',address:'',document:'',terms:'Condições de teste',warranty:90}

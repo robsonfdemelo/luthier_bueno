@@ -16,7 +16,7 @@ function estado(){
   return {version:3,seq:1,customers:[{id:'cliente-1',name:'Cliente Teste',phone:'(62) 90000-0000',email:'',document:'',notes:''}],
     instruments:[{id:'inst-1',customerId:'cliente-1',type:'Violão',brand:'Takamine',model:'P3DC',serial:'',color:'',condition:'',notes:''}],
     orders:[{id:'ordem-1',number:'OS-00001',createdAt:instante,updatedAt:instante,customerId:'cliente-1',instrumentId:'inst-1',
-      receivedDate:'2026-11-11',dueDate:'',complaint:'',diagnosis:'',condition:'',accessories:'',status:'Recebido',approval:'Pendente',
+      receivedDate:'2026-11-11',dueDate:'',complaint:'',diagnosis:'',condition:'',accessories:'',status:'Aprovado',approval:'Pendente',
       items:[{description:'Regulagem',quantity:1,price:150}],photos:[],paid:50,paymentMethod:'Pix',warrantyDays:90,notes:''}],
     settings:{name:'Bueno Luthier',phone:'',address:'',document:'',terms:'Termos de teste',warranty:90}};
 }

@@ -15,7 +15,7 @@ function nova() {
 function estado(photos=[]){return {version:3,seq:1,
  customers:[{id:'c',name:'Maria',phone:'62999999999',email:'',document:'',notes:''}],
  instruments:[{id:'i',customerId:'c',type:'Violão',brand:'Giannini',model:'',serial:'',color:'',condition:'Risco na lateral',notes:''}],
- orders:[{id:'o',number:'OS-00001',createdAt:'2026-11-07T13:00:00.000Z',updatedAt:'2026-11-07T13:00:00.000Z',customerId:'c',instrumentId:'i',receivedDate:'2026-11-07',dueDate:'',complaint:'Regular braço',diagnosis:'',condition:'Risco',accessories:'Capa',status:'Recebido',approval:'Pendente',items:[{description:'Regulagem',quantity:1,price:120}],photos,paid:0,paymentMethod:'Não informado',warrantyDays:90,notes:''}],settings:{name:'Bueno Luthier',phone:'',address:'',document:'',terms:'',warranty:90}}}
+ orders:[{id:'o',number:'OS-00001',createdAt:'2026-11-07T13:00:00.000Z',updatedAt:'2026-11-07T13:00:00.000Z',customerId:'c',instrumentId:'i',receivedDate:'2026-11-07',dueDate:'',complaint:'Regular braço',diagnosis:'',condition:'Risco',accessories:'Capa',status:'Em execução',approval:'Pendente',items:[{description:'Regulagem',quantity:1,price:120}],photos,paid:0,paymentMethod:'Não informado',warrantyDays:90,notes:''}],settings:{name:'Bueno Luthier',phone:'',address:'',document:'',terms:'',warranty:90}}}
 test('upload de foto, vinculação à O.S. e persistência após reabrir SQLite',()=>{
  const f=nova();try{
   const foto=f.banco.subirFoto({name:'recebimento.png',mime:'image/png',data:PNG_MINIMO});
