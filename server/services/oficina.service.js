@@ -8,6 +8,12 @@ const ID_VALIDO = /^[A-Za-z0-9_-]{1,80}$/;
 
 function criarOficinaService(repositorio) {
   function recuperar() { return repositorio.recuperar(); }
+  function buscarClientes(termo) {
+    if (typeof termo !== 'string' || termo.length > 120) {
+      throw new ErroValidacao('Informe até 120 caracteres para pesquisar clientes.');
+    }
+    return repositorio.buscarClientes(termo);
+  }
 
   function salvar(payload) {
     const validado = validarEstado(payload);
@@ -77,7 +83,7 @@ function criarOficinaService(repositorio) {
   }
 
   function fechar() {repositorio.fechar();}
-  return {recuperar,salvar,alterarStatus,subirFoto,obterFoto,exportarBackup,restaurar,fechar};
+  return {recuperar,buscarClientes,salvar,alterarStatus,subirFoto,obterFoto,exportarBackup,restaurar,fechar};
 }
 
 module.exports = {criarOficinaService};

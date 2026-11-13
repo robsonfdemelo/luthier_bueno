@@ -22,6 +22,7 @@ function criarRoteador({authService,authController,oficinaController,pagesContro
         return redirect(res,'/entrar');
       }
       if(metodo==='GET'&&caminho==='/api/state')return oficinaController.state(req,res);
+      if(metodo==='GET'&&caminho==='/api/customers/search')return oficinaController.buscarClientes(req,res,url.searchParams.get('q')||'');
       if(metodo==='GET'&&caminho==='/api/backup')return oficinaController.backup(req,res);
       if(metodo==='GET'&&caminho.startsWith('/api/photos/'))return oficinaController.foto(req,res,caminho.slice('/api/photos/'.length));
       const status=/^\/api\/orders\/([A-Za-z0-9_-]{1,80})\/status$/.exec(caminho);

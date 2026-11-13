@@ -432,3 +432,109 @@ body{background:var(--cream);font-size:14px;color:var(--ink);background-image:no
   .modal{border-radius:12px}
 }
 @media (prefers-reduced-motion:reduce){.nav-btn,.btn,.priority-item,.dashboard-text-link{transition:none}}
+
+/* Busca de clientes no cadastro de O.S. */
+.customer-search-field{position:relative;z-index:5}
+.customer-search-line{display:flex;gap:9px;align-items:flex-start}
+.customer-search-wrap{position:relative;min-width:0;flex:1}
+.customer-search-wrap>.input{padding-right:32px}
+.customer-search-wrap input[type=search]::-webkit-search-cancel-button{cursor:pointer}
+.customer-add-btn{height:42px;min-height:42px;flex-shrink:0;padding:9px 12px}
+.customer-search-options{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 5px);max-height:265px;overflow:auto;border:1px solid #dce3db;border-radius:12px;background:#fff;box-shadow:0 18px 40px rgba(18,40,29,.16);padding:5px}
+.customer-search-options[hidden]{display:none!important}
+.customer-result{width:100%;display:flex;gap:3px;flex-direction:column;padding:11px 12px;border:0;border-radius:8px;text-align:left;background:transparent;color:#203c2d;cursor:pointer}
+.customer-result+.customer-result{border-top:1px solid #f0f2ee}
+.customer-result:hover,.customer-result.active{background:#edf4ef}
+.customer-result:focus-visible{outline:2px solid #598a67;outline-offset:-2px}
+.customer-result-name{font-weight:700;font-size:12px;overflow-wrap:anywhere}
+.customer-result-phone{color:#718176;font-size:11px}
+.customer-search-empty{padding:14px 12px;font-size:12px;color:#718176;line-height:1.5}
+@media(max-width:720px){.customer-search-line{flex-direction:column}.customer-search-wrap{width:100%}.customer-add-btn{width:100%;justify-content:center}.customer-search-options{max-height:240px}}
+
+.modal-hd{z-index:40}
+
+
+/* Impressão de duas vias em uma única folha A4, com linha de recorte central. */
+@media print {
+  @page { size: A4 portrait; margin: 0; }
+  html,body { width:210mm!important; height:auto!important; margin:0!important; padding:0!important; }
+  #print-root { display:block!important; width:210mm!important; }
+  .print-sheet { position:relative; display:flex; flex-direction:column; width:210mm; height:297mm; min-height:297mm; max-height:297mm; margin:0; padding:0; background:#fff; overflow:visible; break-inside:avoid; page-break-inside:avoid; }
+  .print-sheet .print-page.print-copy { position:relative; flex:0 0 148.5mm; width:210mm; height:148.5mm; min-height:0; max-height:148.5mm; padding:7.5mm 10mm 6.5mm; margin:0; box-sizing:border-box; display:flex; flex-direction:column; break-after:auto!important; page-break-after:auto!important; break-inside:avoid; background:#fff; color:#1e2925; font:10px/1.32 Arial,Helvetica,sans-serif; }
+  .print-sheet .print-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid #947046; padding:0 0 2mm; margin:0 0 1.5mm; gap:10mm; }
+  .print-sheet .print-logo { width:26px; height:39px; flex:0 0 26px; object-fit:contain; }
+  .print-sheet .print-brand { gap:7px; }
+  .print-sheet .print-company { font:700 15px/1.1 Georgia,serif; color:#203d2d; }
+  .print-sheet .print-address { font:8px/1.2 Arial,sans-serif; margin-top:2px; }
+  .print-sheet .print-os-title { white-space:nowrap; }
+  .print-sheet .print-os-title strong { font-size:12px; }
+  .print-sheet .print-os-title span { font-size:8px; }
+  .print-sheet .print-badge { margin-top:2px; padding:2px 5px; font-size:8px; }
+  .print-sheet .print-section, .print-sheet .print-page .print-section { margin-top:1.5mm; break-inside:avoid; }
+  .print-sheet .print-section h4, .print-sheet .print-page .print-section h4 { font-size:8.5px; margin:0 0 1mm; padding:2px 6px; letter-spacing:.35px; }
+  .print-sheet .print-grid { grid-template-columns:1fr 1fr; gap:1mm 4mm; }
+  .print-sheet .print-line, .print-sheet .print-page .print-line { min-height:0; padding:0 0 1mm; border-bottom:1px solid #edf0eb; overflow-wrap:anywhere; }
+  .print-sheet .print-line b { font-size:7px; margin-bottom:.5mm; letter-spacing:.1px; }
+  .print-sheet .print-line span { display:block; font-size:10px; line-height:1.2; }
+  .print-sheet .print-table { margin-top:1mm; table-layout:fixed; }
+  .print-sheet .print-table th, .print-sheet .print-table td { padding:3px 5px; font-size:9px; line-height:1.12; overflow-wrap:anywhere; }
+  .print-sheet .print-table th:first-child { width:48%; }
+  .print-sheet .print-total { margin-top:1.2mm; font-size:11px; }
+  .print-sheet .print-payments { margin-top:1mm; }
+  .print-sheet .print-note { font-size:8.5px; line-height:1.25; color:#4f5e54; }
+  .print-sheet .print-photo-summary { font-size:8.5px; color:#53655a; }
+  .print-sheet .print-spacer { flex:1 1 auto; min-height:1mm; }
+  .print-sheet .print-signatures { position:static; display:flex; bottom:auto; left:auto; right:auto; gap:10mm; padding-top:3mm; margin-top:0; }
+  .print-sheet .print-sign { font-size:8px; padding-top:1mm; }
+  .print-sheet .print-foot { position:static; display:flex; bottom:auto; left:auto; right:auto; margin-top:2mm; padding-top:1mm; font-size:7px; }
+
+  .print-sheet.print-dense .print-page.print-copy { padding:5.5mm 9mm 4.5mm; font-size:8.5px; line-height:1.17; }
+  .print-sheet.print-dense .print-header { padding-bottom:1mm; margin-bottom:.5mm; }
+  .print-sheet.print-dense .print-section, .print-sheet.print-dense .print-page .print-section { margin-top:.7mm; }
+  .print-sheet.print-dense .print-section h4, .print-sheet.print-dense .print-page .print-section h4 { margin-bottom:.5mm; padding:1.5px 5px; }
+  .print-sheet.print-dense .print-grid { gap:.3mm 3mm; }
+  .print-sheet.print-dense .print-line, .print-sheet.print-dense .print-page .print-line { padding-bottom:.4mm; }
+  .print-sheet.print-dense .print-line b { margin-bottom:0; }
+  .print-sheet.print-dense .print-table th, .print-sheet.print-dense .print-table td { padding:2px 4px; font-size:7.5px; line-height:1.06; }
+  .print-sheet.print-dense .print-note { font-size:7.5px; }
+  .print-sheet.print-dense .print-line span { font-size:8.5px; }
+  .print-sheet.print-dense .print-signatures { padding-top:1.2mm; }
+  .print-sheet.print-dense .print-foot { margin-top:1mm; }
+  .print-sheet .print-cut-line { position:absolute; left:6mm; right:6mm; top:148.5mm; z-index:1; border-top:1px dashed #888; height:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .print-sheet .print-cut-line span { position:absolute; top:-6px; background:#fff; padding:0 6px; font:7px Arial,sans-serif; letter-spacing:1px; color:#777; }
+}
+
+
+/* Confirmação após gravar a ordem: número gerado e impressão imediata. */
+.order-saved-confirmation{text-align:center;padding:10px 8px 5px}
+.order-saved-icon{width:54px;height:54px;border-radius:50%;background:#e8f3ea;color:#236044;display:grid;place-items:center;margin:0 auto 13px}
+.order-saved-confirmation>p{margin:0 0 14px;color:#5d6d61;font-size:13px}
+.order-saved-number-label{text-transform:uppercase;letter-spacing:1px;font-weight:750;font-size:10px;color:#7b877d;margin-top:14px}
+.order-saved-number{display:block;margin:3px 0 8px;font:700 32px/1.25 Georgia,serif;color:#173c2b;letter-spacing:1px}
+.order-saved-confirmation .order-saved-help{font-size:12px;line-height:1.55;max-width:340px;margin:0 auto 22px}
+.order-saved-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+@media (max-width:480px){.order-saved-actions{flex-direction:column}.order-saved-actions .btn{width:100%}}
+@media print{
+  .print-sheet .print-header{align-items:flex-start}
+  .print-sheet .print-brand{min-width:0;max-width:118mm;align-items:flex-start}
+  .print-sheet .print-business-details{min-width:0}
+  .print-sheet .print-company{overflow-wrap:anywhere}
+  .print-sheet .print-contact-line{display:block;overflow-wrap:anywhere;white-space:normal;font:7.5px/1.16 Arial,Helvetica,sans-serif;color:#50635a}
+  .print-sheet .print-address{margin-top:1mm}
+  .print-sheet .print-os-title{flex:0 0 auto;min-width:0;text-align:right}
+  .print-sheet .print-os-title>div{font-weight:800;font-size:12px;letter-spacing:.2px}
+  .print-sheet.print-dense .print-contact-line{font-size:7px;line-height:1.1}
+}
+
+/* Bueno Luthier v4.0: folha A4 com margens seguras para imprimir duas vias.
+   A rotina de impressão aplica estas medidas também em tempo de execução, evitando CSS antigo em cache. */
+@media print {
+  @page {size:A4 portrait;margin:13mm}
+  html,body {width:auto!important;height:auto!important;margin:0!important;padding:0!important}
+  #print-root {width:184mm!important;height:270mm!important;max-width:184mm!important}
+  #print-root .print-sheet {width:184mm!important;height:270mm!important;min-height:270mm!important;max-height:270mm!important;overflow:hidden!important}
+  #print-root .print-sheet .print-page.print-copy {flex:0 0 135mm!important;width:184mm!important;height:135mm!important;max-height:135mm!important;min-height:135mm!important;overflow:hidden!important}
+  #print-root .print-sheet .print-cut-line {top:135mm!important}
+  #print-root .print-contact-row {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,36mm);gap:2.5mm}
+  #print-root .print-contact-entry,#print-root .print-contact-document {font:8px/1.12 Arial,sans-serif;overflow-wrap:anywhere}
+}

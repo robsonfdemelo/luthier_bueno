@@ -5,6 +5,7 @@ const {json,arquivo} = require('../http/response');
 
 function criarOficinaController(oficinaService,authService){
   function state(req,res){json(res,200,{...oficinaService.recuperar(),loginAtivo:authService.loginAtivo});}
+  function buscarClientes(req,res,termo){json(res,200,oficinaService.buscarClientes(termo));}
   function backup(req,res){json(res,200,oficinaService.exportarBackup());}
   function foto(req,res,id){
     const f=oficinaService.obterFoto(id);
@@ -28,6 +29,6 @@ function criarOficinaController(oficinaService,authService){
     validarOrigem(req);
     json(res,200,oficinaService.restaurar(await lerJson(req,100*1024*1024)));
   }
-  return {state,backup,foto,salvar,status,subirFoto,restaurar};
+  return {state,buscarClientes,backup,foto,salvar,status,subirFoto,restaurar};
 }
 module.exports={criarOficinaController};

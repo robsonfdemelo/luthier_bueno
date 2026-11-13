@@ -7,6 +7,7 @@ function criarRepositorio(arquivo) {
   const db = abrirConexao(arquivo);
 
   const queryClientes = db.prepare('SELECT id, nome AS name, telefone AS phone, email, documento AS document, observacoes AS notes FROM clientes ORDER BY rowid');
+  const queryClientesBusca = db.prepare('SELECT id, nome AS name, telefone AS phone FROM clientes ORDER BY nome COLLATE NOCASE');
   const queryInstrumentos = db.prepare('SELECT id, cliente_id AS customerId, tipo AS type, marca AS brand, modelo AS model, serie AS serial, cor AS color, condicao AS condition, observacoes AS notes FROM instrumentos ORDER BY rowid');
   const queryOrdens = db.prepare(`SELECT id, numero AS number, criado_em AS createdAt, atualizado_em AS updatedAt,
     cliente_id AS customerId, instrumento_id AS instrumentId, recebido_em AS receivedDate,
@@ -23,6 +24,15 @@ function criarRepositorio(arquivo) {
   const getFotosBackup = db.prepare('SELECT id, nome AS name, mime, imagem AS bytes FROM fotos_os WHERE ordem_id IS NOT NULL ORDER BY rowid');
   const insFoto = db.prepare('INSERT INTO fotos_os (id,ordem_id,nome,mime,imagem,criado_em) VALUES (?,NULL,?,?,?,?)');
   const updFoto = db.prepare('UPDATE fotos_os SET ordem_id=? WHERE id=?');
+
+  function buscarClientes(termo) {
+    const normalizar=valor=>String(valor||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();
+    const procurado=normalizar(termo);
+    const digitos=String(termo||'').replace(/\D/g,'');
+    const clientes=queryClientesBusca.all();
+    const encontrados=clientes.filter(c=>!procurado||normalizar(c.name).includes(procurado)||(digitos.length>0&&String(c.phone||'').replace(/\D/g,'').includes(digitos)));
+    return {customers:encontrados.slice(0,10),total:clientes.length,matched:encontrados.length,revision:Number(queryMeta.get('revision').valor)};
+  }
 
   function recuperar() {
     const orders = queryOrdens.all();
@@ -132,7 +142,7 @@ function criarRepositorio(arquivo) {
     }
   }
 
-  return {recuperar, salvar, alterarStatus, subirFoto, obterFoto, listarFotosBackup, fechar: () => db.close()};
+  return {recuperar, buscarClientes, salvar, alterarStatus, subirFoto, obterFoto, listarFotosBackup, fechar: () => db.close()};
 }
 
 module.exports = {criarRepositorio};
